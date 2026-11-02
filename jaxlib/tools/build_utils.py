@@ -198,5 +198,8 @@ def update_setup_with_rocm_version(file_dir: pathlib.Path, rocm_version: str):
   content = content.replace(
       "rocm_version = 0  # placeholder", f"rocm_version = {rocm_version}"
   )
+  # Bazel runfiles can have read-only permissions.
+  # Make the staged copy writable before updating setup.py.
+  src_file.chmod(src_file.stat().st_mode | 0o200)
   with open(src_file, "w") as f:
     f.write(content)
